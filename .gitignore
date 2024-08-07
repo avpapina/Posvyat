@@ -1,0 +1,13 @@
+
+venv/
+.venv/
+
+.env
+
+__pycache__/
+**/__pycache__/
+
+.idea/
+**/.idea/
+
+posvyat-2bba2418def2.json
