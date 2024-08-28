@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phonenumber_field.formfields',
     'corsheaders',
-    'apps.apps.MyappConfig'
+    'apps'
 ]
 
 MIDDLEWARE = [
@@ -51,10 +51,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'rest_framework.middleware.AuthenticationMiddleware',
-    # 'rest_framework.middleware.AuthorizationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 ROOT_URLCONF = 'posvyat.urls'
 
