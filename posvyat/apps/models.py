@@ -81,7 +81,7 @@ class Rasselenie(models.Model):
         default=1,
     )
 
-class ListNames(models.Model):
-        listname = models.ForeignKey(Rasselenie, related_name='values')
-        personname = models.CharField(max_length=200, blank=True)
+# class ListNames(models.Model):
+#         listname = models.ForeignKey(Rasselenie, related_name='values')
+#         personname = models.CharField(max_length=200, blank=True)
 

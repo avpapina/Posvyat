@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps',
+    'rest_framework',
     'phonenumber_field.formfields',
     'corsheaders',
+    'apps.apps.MyappConfig'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'rest_framework.middleware.AuthenticationMiddleware',
+    # 'rest_framework.middleware.AuthorizationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
 
