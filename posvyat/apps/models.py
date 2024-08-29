@@ -15,10 +15,15 @@ class Registration(models.Model):
     tg = models.CharField(max_length=100, validators=[RegexValidator(r'^@.+')], blank=False)
 
     phone = PhoneNumberField(blank=False, null=False)
-    university = models.CharField(max_length=300, blank=False, null=False)
+    bday = models.DateField(blank=False)
+    sex = models.CharField(
+        max_length=10,
+        choices=(('Женский', 'Women'), ('Мужской', 'Men')),
+        blank=False
+    )
+    university = models.CharField(max_length=300, blank=False)
     faculty = models.CharField(max_length=300, blank=False)
     group = models.CharField(max_length=20, default=None)
-
 
     class forTransfer(models.TextChoices):
         ODINTSOVO = 'Да, от Одинцово и обратно', 'Да, от Одинцово и обратно'
@@ -59,6 +64,11 @@ class Transfer(models.Model):
     vk = models.CharField(max_length=100, blank=False)
     tg = models.CharField(max_length=100, validators=[RegexValidator(r'^@.+')], blank=False)
     phone = PhoneNumberField(blank=False)
+    _from = models.CharField(
+        max_length=15,
+        choices=(('Парк Победы', 'Парк Победы'), ('Одинцово', 'Одинцово')),
+        blank=False
+    )
 
 
 class Rasselenie(models.Model):
@@ -70,9 +80,8 @@ class Rasselenie(models.Model):
     middle_name = models.CharField(max_length=100, blank=False)
 
     sex = models.CharField(
-        max_length=2,
-        choices=(('W', 'Women'), ('M', 'Men')),
-        blank=False
+        max_length=10,
+        choices=(('Женский', 'Women'), ('Мужской', 'Men'))
     )
     vk = models.CharField(max_length=100, blank=False)
     tg = models.CharField(
@@ -82,7 +91,7 @@ class Rasselenie(models.Model):
         unique=True
     )
 
-    faculty = models.CharField(max_length=300, blank=False)
+    program = models.CharField(max_length=300, blank=False)
     group = models.CharField(max_length=50, blank=False)
     course_choices = [
         (1, '1'),
