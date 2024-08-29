@@ -11,3 +11,7 @@ __pycache__/
 **/.idea/
 
 posvyat-2bba2418def2.json
+
+*.sqlite3
+migrations/
+vnv/
