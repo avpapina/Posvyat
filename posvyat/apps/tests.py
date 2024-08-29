@@ -9,16 +9,18 @@ from apps.models import Registration, Transfer
 class RegistrationAPITestCase(APITestCase):
     def test_registration_creates_entry(self):
         data = {
-            "name": "Гей",
-            "surname": "геев",
-            "middle_name": "геевич",
-            "vk": "https://vk.com/gay",
-            "tg": "@gay",
+            "name": "Сидел",
+            "surname": "Втюрьме",
+            "middle_name": "Дуров",
+            "vk": "https://vk.com/sad",
+            "tg": "@goodluck",
             "phone": "+79991234567",
+            "bday": "2003-12-25",
+            "sex": "Женский",
             "university": "ВШЭ",
             "faculty": "ПМИ",
             "group": "БПМИИ666",
-            "transfer": "Да, от Одинцово и обратно",
+            "transfer": "Да, от Парка Победы и обратно",
             "course": 1,
             "health_features": "Нет особых требований"
         }
@@ -66,13 +68,14 @@ class TransferAPITests(APITestCase):
 
     def test_create_transfer_with_valid_phone(self):
         data = {
-            "name": "Иван",
-            "surname": "Иванов",
-            "middle_name": "Иванович",
-            "email": "ivan.ivanov@example.com",
-            "vk": "https://vk.com/ivan_ivanov",
-            "tg": "@ivan_ivanov",
-            "phone": "+79999999999"
+            "name": "Дима",
+            "surname": "Димов",
+            "middle_name": "Димович",
+            "email": "dao@diydx.ru",
+            "vk": "https://vk.com/dimov",
+            "tg": "@dimov",
+            "phone": "+79991234568",
+            "_from": "Парк Победы"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -88,7 +91,8 @@ class TransferAPITests(APITestCase):
             "email": "dao@diydx.ru",
             "vk": "https://vk.com/dimov",
             "tg": "@dimov",
-            "phone": "+79001551010"
+            "phone": "+79987788778",
+            "_from": "Парк Победы"
         }
 
         response = self.client.post(self.url, data, format='json')
