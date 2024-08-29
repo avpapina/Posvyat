@@ -7,15 +7,15 @@ class Registration(models.Model):
     class Meta:
         db_table = 'registration_posv'
 
-    name = models.CharField(max_length=100, blank=False, null=False)
-    surname = models.CharField(max_length=100, blank=False, null=False)
+    name = models.CharField(max_length=100, blank=False)
+    surname = models.CharField(max_length=100, blank=False)
     middle_name = models.CharField(max_length=100, blank=False)
 
     vk = models.CharField(max_length=100, blank=False)
     tg = models.CharField(max_length=100, validators=[RegexValidator(r'^@.+')], blank=False)
 
-    phone = PhoneNumberField(blank=False, null=False)
-    university = models.CharField(max_length=300, blank=False, null=False)
+    phone = PhoneNumberField(blank=False)
+    university = models.CharField(max_length=300, blank=False)
     faculty = models.CharField(max_length=300, blank=False)
     group = models.CharField(max_length=20, default=None)
 
@@ -68,7 +68,11 @@ class Rasselenie(models.Model):
     surname = models.CharField(max_length=100, blank=False)
     middle_name = models.CharField(max_length=100, blank=False)
 
-    sex = models.CharField(max_length=2, choices=(('W', 'Women'), ('M', 'Men')), blank=False)
+    sex = models.CharField(
+        max_length=2,
+        choices=(('W', 'Women'), ('M', 'Men')),
+        blank=False
+    )
     vk = models.CharField(max_length=100, blank=False)
     tg = models.CharField(
         max_length=100,
@@ -91,7 +95,7 @@ class Rasselenie(models.Model):
         choices=course_choices,
         default=1,
     )
-
+    people_custom = models.JSONField(default=list, blank=True)
 # class ListNames(models.Model):
 #         listname = models.ForeignKey(Rasselenie, related_name='values')
 #         personname = models.CharField(max_length=200, blank=True)
