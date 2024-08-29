@@ -17,3 +17,4 @@ def start_page(request):
 class RegistrationAPI(generics.CreateAPIView):
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
+

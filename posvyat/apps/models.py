@@ -14,10 +14,11 @@ class Registration(models.Model):
     vk = models.CharField(max_length=100, blank=False)
     tg = models.CharField(max_length=100, validators=[RegexValidator(r'^@.+')], blank=False)
 
-    phone = PhoneNumberField(blank=False)
-    university = models.CharField(max_length=300, blank=False)
+    phone = PhoneNumberField(blank=False, null=False)
+    university = models.CharField(max_length=300, blank=False, null=False)
     faculty = models.CharField(max_length=300, blank=False)
     group = models.CharField(max_length=20, default=None)
+
 
     class forTransfer(models.TextChoices):
         ODINTSOVO = 'Да, от Одинцово и обратно', 'Да, от Одинцово и обратно'
@@ -98,4 +99,4 @@ class Rasselenie(models.Model):
     people_custom = models.JSONField(default=list, blank=True)
 # class ListNames(models.Model):
 #         listname = models.ForeignKey(Rasselenie, related_name='values')
-#         personname = models.CharField(max_length=200, blank=True)
+#         personname = models.CharField(max_length=200, blank=True
