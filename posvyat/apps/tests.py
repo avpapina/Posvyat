@@ -88,7 +88,7 @@ class TransferAPITests(APITestCase):
             "email": "dao@diydx.ru",
             "vk": "https://vk.com/dimov",
             "tg": "@dimov",
-            "phone": "+70001"
+            "phone": "+79001551010"
         }
 
         response = self.client.post(self.url, data, format='json')
