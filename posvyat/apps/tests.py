@@ -75,7 +75,8 @@ class TransferAPITests(APITestCase):
             "vk": "https://vk.com/dimov",
             "tg": "@dimov",
             "phone": "+79991234568",
-            "_from": "Парк Победы"
+            "_from": "Парк Победы",
+            "departure_time": "15:15"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -92,7 +93,8 @@ class TransferAPITests(APITestCase):
             "vk": "https://vk.com/dimov",
             "tg": "@dimov",
             "phone": "+79987788778",
-            "_from": "Парк Победы"
+            "_from": "Парк Победы",
+            "departure_time": "15:30"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -107,7 +109,9 @@ class TransferAPITests(APITestCase):
             "middle_name": "Димович",
             "email": "dao@diydx.ru",
             "vk": "https://vk.com/dimov",
-            "tg": "@dimov"
+            "tg": "@dimov",
+            "_from": "Парк Победы",
+            "departure_time": "15:30"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -124,7 +128,9 @@ class TransferAPITests(APITestCase):
             "email": "dao@diydx.ru",
             "vk": "https://vk.com/dimov",
             "tg": "@dimov",
-            "phone": "+79991234568"
+            "phone": "+79991234568",
+            "_from": "Парк Победы",
+            "departure_time": "15:30"
         }
 
         response = self.client.post(self.url, data, format='json')
