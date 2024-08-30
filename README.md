@@ -16,7 +16,7 @@ _Бэкенд сторона сайта для регистрации польз
 
 ## Swagger
 
-[Спецификация API]('https://www.notion.so/804886d99be743cbba2938c48468cb4c')
+[Спецификация API](https://www.notion.so/804886d99be743cbba2938c48468cb4c)
 
 ## Endpoints
 
