@@ -6,7 +6,7 @@ class MyappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps'
 
-    def config_start_scheduler(self):
+    def ready(self):
         if settings.SCHEDULER_AUTOSTART:
             from .google import start_scheduler
             start_scheduler()
