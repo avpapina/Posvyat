@@ -153,7 +153,6 @@ def upload_rasselenie_data(client: Client) -> None:
                 ', '.join(map(str, rasselenie_data.people_custom))
             ]
             data_to_upload.append(row_data)
-
         if data_to_upload:
             start_row = 2
             end_row = start_row + len(data_to_upload) - 1
@@ -169,7 +168,7 @@ def background_update():
         logger.warning("Задача уже выполняется")
         return
     try:
-        cache.set('background_update_lock', True, timeout=60)  # Устанавливаем блокировку на 60 секунд
+        cache.set('background_update_lock', True, timeout=30)  # Устанавливаем блокировку на 60 секунд
         client = client_init_json()
         if client is not None:
             create_sheets(client, TABLE_ID)
