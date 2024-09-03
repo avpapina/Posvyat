@@ -11,6 +11,7 @@ __pycache__/
 **/.idea/
 
 posvyat-2bba2418def2.json
+django_app.log
 
 *.sqlite3
 migrations/
