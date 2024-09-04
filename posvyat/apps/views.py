@@ -4,10 +4,9 @@ from django.shortcuts import render, redirect
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from apps.models import Registration, Transfer
+from apps.models import Registration, Transfer, Rasselenie
 
-from apps.serializers import RegistrationSerializer, TransferSerializer
-
+from apps.serializers import RegistrationSerializer, TransferSerializer, RasselenieSerializer
 
 def main_page(request):
     return render(request, 'main_page.html')
@@ -59,3 +58,53 @@ class TransferAPI(generics.CreateAPIView):
                 {"error": "Phones file not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class RasselenieAPI(generics.CreateAPIView):
+    serializer_class = RasselenieSerializer
+    requests = Rasselenie.objects.all()
+
+    def create(self, request, *args, **kwargs):
+
+        fields = ['name', 'surname', 'middle_name', 'vk', 'tg', 'program', 'group', 'course']
+
+        for field in fields:
+            datas = request.data.get(field)
+
+            if not datas:
+                return Response(
+                {"error": "This field are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        file_path = os.path.join(
+        os.path.dirname(__file__),
+        'phones.txt'
+        )
+        
+        phone = request.data.get('phone')
+
+        if not phone:
+                return Response(
+                {"error": "This field are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            with open(file_path, 'r', encoding = 'utf-8') as file:
+                phones = file.read().splitlines()
+                if phone in phones:
+                    serializer = self.get_serializer(data = request.data)
+                    serializer.is_valid(raise_exception=True)
+                    self.perform_create(serializer)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    return Response(
+                        {"error": "Phone number not found."},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+        except FileNotFoundError:
+            return Response(
+                {"error": "Phones file not found."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
