@@ -109,35 +109,21 @@ class RasselenieAPI(generics.CreateAPIView):
                     {"error": f"{field} field are required."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
-        file_path = os.path.join(
-            os.path.dirname(__file__),
-            'phones.txt'
-        )
-
         phone = request.data.get('phone')
 
-        if not phone:
-            return Response(
-                {"error": "This field are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                phones = file.read().splitlines()
-                if phone in phones:
-                    serializer = self.get_serializer(data=request.data)
-                    serializer.is_valid(raise_exception=True)
-                    self.perform_create(serializer)
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                else:
-                    return Response(
-                        {"error": "Phone number not found."},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
-        except FileNotFoundError:
+        response = check_phone(phone)
+        if response < 0:
             return Response(
                 {"error": "Phones file not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        elif response == 0:
+            return Response(
+                {"error": "Phone number not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

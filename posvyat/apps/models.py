@@ -4,6 +4,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.supportfunc import read_json_choices
 
+
 class Registration(models.Model):
     class Meta:
         db_table = 'registration_posv'
@@ -39,7 +40,7 @@ class Registration(models.Model):
     faculty = models.CharField(max_length=300, blank=False, verbose_name='Факультет')
     group = models.CharField(max_length=20, default=None, verbose_name='Группа')
 
-    #class forTransfer(models.TextChoices):
+    # class forTransfer(models.TextChoices):
     #    ODINTSOVO = 'Да, от Одинцово и обратно', 'Да, от Одинцово и обратно'
     #    PARKPOBEDY = 'Да, от Парка Победы и обратно', 'Да, от Парка Победы и обратно'
     #    NO = 'Не нужен', 'Не нужен'
@@ -167,6 +168,8 @@ class Rasselenie(models.Model):
 
     def __str__(self):
         return f'<{self.surname} {self.name} {self.group}>'
+
+
 # class ListNames(models.Model):
 #         listname = models.ForeignKey(Rasselenie, related_name='values')
 #         personname = models.CharField(max_length=200, blank=True
