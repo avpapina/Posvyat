@@ -224,3 +224,6 @@ class Factions(models.Model):
         blank=False,
         verbose_name='Приоритет 6'
     )
+
+    def __str__(self):
+        return f'<{str(self.phone)}>'
