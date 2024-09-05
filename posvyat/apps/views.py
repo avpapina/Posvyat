@@ -8,6 +8,7 @@ from apps.models import Registration, Transfer, Rasselenie
 
 from apps.serializers import RegistrationSerializer, TransferSerializer, RasselenieSerializer
 
+
 def main_page(request):
     return render(request, 'main_page.html')
 
@@ -59,9 +60,10 @@ class TransferAPI(generics.CreateAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
 class RasselenieAPI(generics.CreateAPIView):
     serializer_class = RasselenieSerializer
-    requests = Rasselenie.objects.all()
+    queryset = Rasselenie.objects.all()
 
     def create(self, request, *args, **kwargs):
 
@@ -72,28 +74,28 @@ class RasselenieAPI(generics.CreateAPIView):
 
             if not datas:
                 return Response(
-                {"error": "This field are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                    {"error": f"{field} field are required."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
         file_path = os.path.join(
-        os.path.dirname(__file__),
-        'phones.txt'
+            os.path.dirname(__file__),
+            'phones.txt'
         )
-        
+
         phone = request.data.get('phone')
 
         if not phone:
-                return Response(
+            return Response(
                 {"error": "This field are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         try:
-            with open(file_path, 'r', encoding = 'utf-8') as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 phones = file.read().splitlines()
                 if phone in phones:
-                    serializer = self.get_serializer(data = request.data)
+                    serializer = self.get_serializer(data=request.data)
                     serializer.is_valid(raise_exception=True)
                     self.perform_create(serializer)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,4 +109,3 @@ class RasselenieAPI(generics.CreateAPIView):
                 {"error": "Phones file not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
