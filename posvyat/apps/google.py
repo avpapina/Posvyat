@@ -7,7 +7,7 @@ from gspread import Client, Spreadsheet, service_account, exceptions
 from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 
-from .models import Registration, Transfer, Rasselenie
+from apps.models import Registration, Transfer, Rasselenie, Factions
 
 # ID Google таблицы
 # TABLE_ID = '1_jxyRGncretB5OAtRyOZVgoO00WSXQXnGQcm8CoCv8Y' # основной посвятовский
@@ -18,7 +18,7 @@ def client_init_json() -> Client:
     """Создание клиента для работы с Google Sheets."""
     try:
         return service_account(
-            filename='apps/posvyat.json')  # filename для тестов ПОМЕНЯТЬ НА НУЖНОЕ в финалке
+            filename='apps/config/posvyat.json')  # filename для тестов ПОМЕНЯТЬ НА НУЖНОЕ в финалке
     except exceptions.GSpreadException as e:
         logging.error("Ошибка при создании клиента: %s", e)
         return None
@@ -48,18 +48,42 @@ def create_sheets(client: Client, table_id: str) -> None:
         spreadsheet.worksheet('Registration')
         spreadsheet.worksheet('Transfer')
         spreadsheet.worksheet('Rasselenie')
+        spreadsheet.worksheet('Factions')
     except gspread.exceptions.WorksheetNotFound:
-        worksheet = spreadsheet.add_worksheet(title='Registration', rows=100, cols=20)
-        worksheet.insert_row([
-            "Name", "Surname", "Middle Name", "VK", "TG", "Phone", "Birthday", "Sex",
-            "University", "Faculty", "Group", "Transfer", "Course", "Health Features"
-        ], 1)
-        worksheet = spreadsheet.add_worksheet(title='Transfer', rows=100, cols=20)
-        worksheet.insert_row(["Name", "Surname", "Middle Name", "Email", "VK", "TG", "Phone",
-                              "From", "Departure Time"], 1)
-        worksheet = spreadsheet.add_worksheet(title='Rasselenie', rows=100, cols=20)
-        worksheet.insert_row(["Name", "Surname", "Middle Name", "VK", "TG", "Phone",
-                              "Program", "Group", "Course", "People Custom"], 1)
+        logger.warning('No sheets. Creating...')
+        try:
+            worksheet = spreadsheet.add_worksheet(title='Registration', rows=100, cols=20)
+            worksheet.insert_row([
+                "Name", "Surname", "Middle Name", "VK", "TG", "Phone", "Birthday", "Sex",
+                "University", "Faculty", "Group", "Transfer", "Course", "Health Features"
+            ], 1)
+            logger.info(f'New google table Registration')
+        except BaseException as e:
+            logger.warning(f'Registration was created - {e}')
+        try:
+            worksheet = spreadsheet.add_worksheet(title='Transfer', rows=100, cols=20)
+            worksheet.insert_row(["Name", "Surname", "Middle Name", "Email", "VK", "TG", "Phone",
+                                  "From", "Departure Time"], 1)
+            logger.info(f'New google table Transfer')
+        except BaseException as e:
+            logger.warning(f'Transfer was created - {e}')
+        try:
+            worksheet = spreadsheet.add_worksheet(title='Rasselenie', rows=100, cols=20)
+            worksheet.insert_row(["Name", "Surname", "Middle Name", "VK", "TG", "Phone",
+                                  "Program", "Group", "Course", "People Custom"], 1)
+            logger.info(f'New google table Rasselenie')
+        except BaseException as e:
+            logger.warning(f'Rasselenie was created - {e}')
+        try:
+            worksheet = spreadsheet.add_worksheet(title='Factions', rows=100, cols=20)
+            worksheet.insert_row(
+                [
+                    "Phone", "priority1", "priority2", "priority3", "priority4", "priority5", "priority6"
+                ],
+                1)
+            logger.info(f'New google table Factions')
+        except BaseException as e:
+            logger.warning(f'Factions was created - {e}')
 
 
 # def delete_data_from_sheets(client: Client) -> None:
@@ -161,6 +185,31 @@ def upload_rasselenie_data(client: Client) -> None:
         logger.info("Rasselenie updated")
 
 
+def upload_factions_data(client: Client) -> None:
+    """Выгрузка данных в гугл таблицу по фракциям"""
+    spreadsheet = get_table_by_id(client, TABLE_ID)
+    if spreadsheet is not None:
+        worksheet = spreadsheet.worksheet('Factions')
+        data_to_upload = []
+        for factions_data in Factions.objects.all():
+            row_data = [
+                str(factions_data.phone),
+                factions_data.priority1,
+                factions_data.priority2,
+                factions_data.priority3,
+                factions_data.priority4,
+                factions_data.priority5,
+                factions_data.priority6
+            ]
+            data_to_upload.append(row_data)
+        if data_to_upload:
+            start_row = 2
+            end_row = start_row + len(data_to_upload) - 1
+            range_notation = f'A{start_row}:N{end_row}'
+            worksheet.update(data_to_upload, range_notation)
+        logger.info("Factions updated")
+
+
 def background_update():
     """Функция для планирования обновления таблиц в фоне."""
     logger.info("Запуск задачи обновления таблиц.")
@@ -168,13 +217,14 @@ def background_update():
         logger.warning("Задача уже выполняется")
         return
     try:
-        cache.set('background_update_lock', True, timeout=30)  # Устанавливаем блокировку на 60 секунд
+        cache.set('background_update_lock', True, timeout=46)  # Устанавливаем блокировку
         client = client_init_json()
         if client is not None:
             create_sheets(client, TABLE_ID)
             upload_registration_data(client)
             upload_transfer_data(client)
             upload_rasselenie_data(client)
+            upload_factions_data(client)
     finally:
         cache.delete('background_update_lock')
 
@@ -185,5 +235,5 @@ scheduler = BackgroundScheduler(jobstores={'default': MemoryJobStore()})
 def start_scheduler():
     """Запуск планировщика для обновления таблиц в фоне."""
     if not scheduler.get_job('background_update_job'):
-        scheduler.add_job(background_update, 'interval', seconds=30, id='background_update_job')
+        scheduler.add_job(background_update, 'interval', seconds=45, id='background_update_job')
         scheduler.start()
