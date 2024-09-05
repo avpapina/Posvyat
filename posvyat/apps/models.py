@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
+from apps.supportfunc import read_json_choices
 
 class Registration(models.Model):
     class Meta:
@@ -38,15 +39,15 @@ class Registration(models.Model):
     faculty = models.CharField(max_length=300, blank=False, verbose_name='Факультет')
     group = models.CharField(max_length=20, default=None, verbose_name='Группа')
 
-    class forTransfer(models.TextChoices):
-        ODINTSOVO = 'Да, от Одинцово и обратно', 'Да, от Одинцово и обратно'
-        PARKPOBEDY = 'Да, от Парка Победы и обратно', 'Да, от Парка Победы и обратно'
-        NO = 'Не нужен', 'Не нужен'
-
+    #class forTransfer(models.TextChoices):
+    #    ODINTSOVO = 'Да, от Одинцово и обратно', 'Да, от Одинцово и обратно'
+    #    PARKPOBEDY = 'Да, от Парка Победы и обратно', 'Да, от Парка Победы и обратно'
+    #    NO = 'Не нужен', 'Не нужен'
+    TRANSFERS = read_json_choices('transfers.json')
     transfer = models.CharField(
         max_length=50,
-        choices=forTransfer.choices,
-        default=forTransfer.NO,
+        choices=TRANSFERS,
+        default=TRANSFERS[-1],
         verbose_name='Трансфер'
     )
 
@@ -76,11 +77,8 @@ class Transfer(models.Model):
         verbose_name = 'Трансфер'
         verbose_name_plural = 'Трансфер'
 
-    TIMES = (
-        ('15:15', '15:15'),
-        ('15:35', '15:35'),
-    )
-
+    TIMES = read_json_choices('time.json')
+    FROM_LOCATION = read_json_choices('locations.json')
     name = models.CharField(max_length=100, blank=False, verbose_name='Имя')
     surname = models.CharField(max_length=100, blank=False, verbose_name='Фамилия')
     middle_name = models.CharField(max_length=100, blank=False, verbose_name='Отчество')
@@ -101,7 +99,7 @@ class Transfer(models.Model):
     )
     _from = models.CharField(
         max_length=15,
-        choices=(('Парк Победы', 'Парк Победы'), ('Одинцово', 'Одинцово')),
+        choices=FROM_LOCATION,
         blank=False,
         verbose_name='Откуда трансфер'
     )
@@ -172,3 +170,54 @@ class Rasselenie(models.Model):
 # class ListNames(models.Model):
 #         listname = models.ForeignKey(Rasselenie, related_name='values')
 #         personname = models.CharField(max_length=200, blank=True
+
+
+class Factions(models.Model):
+    class Meta:
+        db_table = 'factions_posv'
+        verbose_name = "Выбор фракций"
+        verbose_name_plural = "Выборы фракций"
+
+    phone = PhoneNumberField(
+        blank=False,
+        null=False,
+        verbose_name='Телефон',
+        unique=True
+    )
+    FACTIONS = read_json_choices("factions.json")
+    priority1 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 1'
+    )
+    priority2 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 2'
+    )
+    priority3 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 3'
+    )
+    priority4 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 4'
+    )
+    priority5 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 5'
+    )
+    priority6 = models.CharField(
+        max_length=50,
+        choices=FACTIONS,
+        blank=False,
+        verbose_name='Приоритет 6'
+    )
