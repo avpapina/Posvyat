@@ -80,7 +80,7 @@ class Transfer(models.Model):
         verbose_name = 'Трансфер'
         verbose_name_plural = 'Трансфер'
 
-    TIMES = read_json_choices('time_odi.json')
+    TIMES = read_json_choices('time_odi.json') + read_json_choices('time_park.json')
     FROM_LOCATION = read_json_choices('locations.json')
     name = models.CharField(max_length=100, blank=False, verbose_name='Имя')
     surname = models.CharField(max_length=100, blank=False, verbose_name='Фамилия')
