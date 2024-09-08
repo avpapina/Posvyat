@@ -3,7 +3,7 @@ import os
 from django.shortcuts import render, redirect
 from rest_framework import generics, status
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
 from apps.models import Registration, Transfer, Rasselenie, Factions
 
 from apps.serializers import RegistrationSerializer, TransferSerializer, RasselenieSerializer, FactionsSerializer
@@ -29,7 +29,6 @@ class TransferAPI(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         phone = request.data.get('phone')
-
         if not phone:
             return Response(
                 {"error": "Phone are required."},
@@ -59,38 +58,28 @@ class FactionsAPI(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         phone = request.data.get('phone')
-        priority = set()
-        for i in range(6):
-            priority.add(request.data.get('priority'+str(i+1)))
-        if(len(priority) >= 6):
-
-            if not phone:
-                return Response(
+        if not phone:
+            return Response(
                     {"error": "Phone are required."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            response = check_phone(phone)
-            if(response < 0):
-                return Response(
+        response = check_phone(phone)
+        if(response < 0):
+            return Response(
                     {"error": "Phones file not found."},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-            elif(response == 0):
-                return Response(
+        elif(response == 0):
+            return Response(
                         {"error": "Phone number not found."},
                         status=status.HTTP_404_NOT_FOUND
                     )
-            else:
-                serializer = self.get_serializer(data=request.data)
-                serializer.is_valid(raise_exception=True)
-                self.perform_create(serializer)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(
-                        {"error": "You have the same priorities"},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RasselenieAPI(generics.CreateAPIView):
@@ -127,3 +116,22 @@ class RasselenieAPI(generics.CreateAPIView):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TimesAPIView(APIView):
+
+    def get(self, request):
+        times_park = list(map(lambda x: x[0], read_json_choices('time_park.json')))
+        times_odi = list(map(lambda x: x[0], read_json_choices('time_odi.json')))
+        odi = []
+        for time in times_odi:
+            count_transfer = Transfer.objects.filter(_from="Одинцово", departure_time=time)
+            if len(count_transfer) < 20:
+                odi.append(time)
+        park = []
+        for time in times_park:
+            count_transfer = Transfer.objects.filter(_from="Парк Победы", departure_time=time)
+            if len(count_transfer) < 20:
+                park.append(time)
+
+        return Response({"Одинцово": odi, "Парк Победы": park})

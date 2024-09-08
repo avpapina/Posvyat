@@ -78,7 +78,13 @@ def create_sheets(client: Client, table_id: str) -> None:
             worksheet = spreadsheet.add_worksheet(title='Factions', rows=100, cols=20)
             worksheet.insert_row(
                 [
-                    "Phone", "priority1", "priority2", "priority3", "priority4", "priority5", "priority6"
+                    "Phone",
+                    "smugglers",
+                    "scorpions",
+                    "ghosts",
+                    "traders",
+                    "deputy_marshals",
+                    "deputy_sheriff"
                 ],
                 1)
             logger.info(f'New google table Factions')
@@ -194,12 +200,12 @@ def upload_factions_data(client: Client) -> None:
         for factions_data in Factions.objects.all():
             row_data = [
                 str(factions_data.phone),
-                factions_data.priority1,
-                factions_data.priority2,
-                factions_data.priority3,
-                factions_data.priority4,
-                factions_data.priority5,
-                factions_data.priority6
+                factions_data.smugglers,
+                factions_data.scorpions,
+                factions_data.ghosts,
+                factions_data.traders,
+                factions_data.deputy_marshals,
+                factions_data.deputy_sheriff
             ]
             data_to_upload.append(row_data)
         if data_to_upload:

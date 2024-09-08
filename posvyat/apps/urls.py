@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-from apps.views import RegistrationAPI, TransferAPI, RasselenieAPI, FactionsAPI
+from apps.views import RegistrationAPI, TransferAPI, RasselenieAPI, FactionsAPI, TimesAPIView
 
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/v1/transfer', TransferAPI.as_view(), name='transfer'),
     path('api/v1/factions', FactionsAPI.as_view(), name='factions'),
     path('api/v1/resettlement', RasselenieAPI.as_view(), name='resettlement'),
+    path('api/v1/times', TimesAPIView.as_view()),
 ]

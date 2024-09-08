@@ -43,3 +43,7 @@ _Бэкенд сторона сайта для регистрации польз
 #### Время трансфера
 
 `api/v1/times`
+
+## Frontend компонент
+
+[Ссылка на фронт](https://github.com/alicedeni/posvyat/tree/dev)

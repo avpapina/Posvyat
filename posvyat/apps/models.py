@@ -32,7 +32,7 @@ class Registration(models.Model):
     bday = models.DateField(blank=False, verbose_name='Дата рождения')
     sex = models.CharField(
         max_length=10,
-        choices=(('Женский', 'Woman'), ('Мужской', 'Man')),
+        choices=(('Женский', 'Женский'), ('Мужской', 'Мужской')),
         blank=False,
         verbose_name='Пол'
     )
@@ -58,6 +58,8 @@ class Registration(models.Model):
         (3, '3'),
         (4, '4'),
         (5, '5'),
+        (6, '6'),
+        (7, '7'),
     ]
 
     course = models.IntegerField(
@@ -78,7 +80,7 @@ class Transfer(models.Model):
         verbose_name = 'Трансфер'
         verbose_name_plural = 'Трансфер'
 
-    TIMES = read_json_choices('time.json')
+    TIMES = read_json_choices('time_odi.json')
     FROM_LOCATION = read_json_choices('locations.json')
     name = models.CharField(max_length=100, blank=False, verbose_name='Имя')
     surname = models.CharField(max_length=100, blank=False, verbose_name='Фамилия')
@@ -153,6 +155,8 @@ class Rasselenie(models.Model):
         (3, '3'),
         (4, '4'),
         (5, '5'),
+        (6, '6'),
+        (7, '7'),
     ]
 
     course = models.IntegerField(
@@ -188,41 +192,41 @@ class Factions(models.Model):
         unique=True
     )
     FACTIONS = read_json_choices("factions.json")
-    priority1 = models.CharField(
+    smugglers = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 1'
+        verbose_name='Контрабандисты'
     )
-    priority2 = models.CharField(
+    scorpions = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 2'
+        verbose_name='Скорпионы'
     )
-    priority3 = models.CharField(
+    ghosts = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 3'
+        verbose_name='Призраки'
     )
-    priority4 = models.CharField(
+    traders = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 4'
+        verbose_name='Торговцы'
     )
-    priority5 = models.CharField(
+    deputy_marshals = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 5'
+        verbose_name='Помощники маршала'
     )
-    priority6 = models.CharField(
+    deputy_sheriff = models.CharField(
         max_length=50,
         choices=FACTIONS,
         blank=False,
-        verbose_name='Приоритет 6'
+        verbose_name='Помощники шерифа'
     )
 
     def __str__(self):
